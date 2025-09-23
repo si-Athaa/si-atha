@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Portfolio - Simple Template</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0f1724;
+      --card:#0b1220;
+      --muted:#9aa4b2;
+      --accent:#6ee7b7;
+      --glass: rgba(255,255,255,0.03);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial}
+    body{background:linear-gradient(180deg,#071026 0%, var(--bg) 100%);color:#e6eef6}
+    a{color:inherit;text-decoration:none}
+    .container{max-width:980px;margin:0 auto;padding:28px}
+
+    /* nav */
+    header{position:sticky;top:12px;z-index:40}
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;background:transparent;padding:8px 12px;border-radius:12px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#9be7ff);display:flex;align-items:center;justify-content:center;color:#022; font-weight:700}
+    nav ul{display:flex;gap:14px;align-items:center;margin:0;padding:0;list-style:none}
+    .btn{background:var(--glass);padding:8px 12px;border-radius:10px;font-weight:600}
+
+    /* hero */
+    .hero{display:grid;grid-template-columns:1fr 320px;gap:28px;align-items:center;padding:32px 0}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:20px;border-radius:16px;box-shadow:0 6px 18px rgba(2,6,23,0.6)}
+    h1{margin:0;font-size:28px}
+    .lead{color:var(--muted);margin-top:8px}
+    .hire{display:inline-block;margin-top:14px;padding:10px 16px;border-radius:12px;background:var(--accent);color:#042; font-weight:700}
+
+    /* skills */
+    .skills{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    .skill{background:rgba(255,255,255,0.03);padding:8px 10px;border-radius:999px;font-weight:600}
+
+    /* projects */
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:16px}
+    .project{padding:12px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.02)}
+    .project h3{margin:0;font-size:16px}
+    .project p{color:var(--muted);font-size:13px}
+
+    /* contact */
+    form{display:grid;gap:10px}
+    input,textarea{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:10px;border-radius:8px;color:inherit}
+    textarea{min-height:120px}
+
+    footer{margin-top:36px;color:var(--muted);text-align:center;padding:18px 0}
+
+    /* responsive */
+    @media(max-width:900px){
+      .hero{grid-template-columns:1fr;}
+      .grid{grid-template-columns:1fr}
+      nav ul{display:none}
+      .mobile-menu{display:block}
+    }
+    .mobile-menu{display:none}
+
+    /* small helpers */
+    .muted{color:var(--muted)}
+    .chip{display:inline-block;padding:6px 8px;border-radius:8px;background:rgba(255,255,255,0.02);font-weight:600}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="nav">
+        <div class="brand">
+          <div class="logo">P</div>
+          <div>
+            <div style="font-weight:700">PORTFOLIO</div>
+            <div class="muted" style="font-size:12px">Simple & clean template</div>
+          </div>
+        </div>
+        <nav>
+          <ul>
+            <li><a href="#home" class="btn">Home</a></li>
+            <li><a href="#about" class="btn">About</a></li>
+            <li><a href="#skills" class="btn">Skills</a></li>
+            <li><a href="#projects" class="btn">Projects</a></li>
+            <li><a href="#contact" class="btn">Contact</a></li>
+          </ul>
+        </nav>
+        <div class="mobile-menu btn" onclick="toggleMobile()">Menu</div>
+      </div>
+    </header>
+
+    <main>
+      <!-- HOME -->
+      <section id="home" class="hero">
+        <div class="card">
+          <h1>Hey, what’s up? I’m <span style="color:var(--accent)">Atha</span></h1>
+          <p class="lead">Frontend Dev | Absurd Dev, sometimes serious . Create simple websites, games and tools.</p>
+          <a class="hire" href="#contact">Hire me</a>
+        </div>
+
+        <aside class="card" style="text-align:center">
+          <div style="width:120px;height:120px;border-radius:12px;margin:0 auto;background:linear-gradient(180deg,#a7f3d0,#bfe9ff);display:flex;align-items:center;justify-content:center;color:#042;font-weight:800;font-size:28px">A</div>
+          <div style="margin-top:12px">Nice to meet you bro!!</div>
+        </aside>
+      </section>
+
+      <!-- ABOUT -->
+      <section id="about" style="margin-top:20px">
+        <div class="card">
+          <h2>About me</h2>
+          <p class="muted">I enjoy learning HTML, CSS, PY, JS and creating simple projects.</p>
+        </div>
+      </section>
+
+      <!-- SKILLS -->
+      <section id="skills" style="margin-top:20px">
+        <div class="card">
+          <h2>Skills</h2>
+          <div class="skills">
+            <div class="skill">HTML</div>
+            <div class="skill">CSS</div>
+            <div class="skill">JavaScript</div>
+            <div class="skill">React</div>
+            <div class="skill">Canvas / Game</div>
+            <div class="skill">UI/UX</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PROJECTS -->
+      <section id="projects" style="margin-top:20px">
+        <div class="card">
+          <h2>Projects</h2>
+          <div class="grid">
+            <article class="project">
+              <h3>My Project 1</h3>
+              <p class="muted">Klik untuk lihat detail project pertama.</p>
+              <div style="margin-top:8px"><a href="index1.html" class="btn" target="_blank">View</a></div>
+            </article>
+            <article class="project">
+              <h3>My Project 2</h3>
+              <p class="muted">Klik untuk lihat detail project kedua.</p>
+              <div style="margin-top:8px"><a href="index2.html" class="btn" target="_blank">View</a></div>
+            </article>
+            <article class="project">
+              <h3>My Project 3</h3>
+              <p class="muted">Klik untuk lihat detail project ketiga.</p>
+              <div style="margin-top:8px"><a href="index3.html" class="btn" target="_blank">View</a></div>
+            </article>
+            <article class="project">
+              <h3>My Project 4</h3>
+              <p class="muted">Klik untuk lihat detail project keempat.</p>
+              <div style="margin-top:8px"><a href="index4.html" class="btn" target="_blank">View</a></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONTACT -->
+      <section id="contact" style="margin-top:20px">
+        <div class="card">
+          <h2>Contact</h2>
+          <p class="muted">Just go ahead and fill out the form, or, if it’s easier, send me an email: <span style="color:var(--accent)">youremail@example.com</span></p>
+          <form onsubmit="event.preventDefault();alert('Form demo. Replace with your backend or mailto link.')">
+            <input type="text" name="name" placeholder="Your name" required>
+            <input type="email" name="email" placeholder="Your email" required>
+            <textarea name="message" placeholder="Message..." required></textarea>
+            <div style="display:flex;gap:8px;justify-content:flex-end">
+              <button class="btn" type="submit">Send</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+    </main>
+
+    <footer>
+      Simple portfolio template • Customize free
+    </footer>
+  </div>
+
+  <script>
+    function toggleMobile(){
+      const nav = document.querySelector('nav ul');
+      if(!nav) return;
+      if(nav.style.display === 'flex') nav.style.display = 'none';
+      else nav.style.display = 'flex';
+      nav.style.flexDirection = 'column';
+      nav.style.position = 'absolute';
+      nav.style.right = '28px';
+      nav.style.top = '68px';
+      nav.style.background = 'rgba(2,6,23,0.6)';
+      nav.style.padding = '10px';
+    }
+
+    // smooth scroll for internal links
+    document.querySelectorAll('a[href^="#"]').forEach(a=>{
+      a.addEventListener('click', e=>{
+        const href = a.getAttribute('href');
+        if(href.length>1){
+          e.preventDefault();
+          document.querySelector(href).scrollIntoView({behavior:'smooth',block:'start'});
+        }
+      })
+    });
+  </script>
+</body>
+</html>
