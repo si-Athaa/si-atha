@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Text Editor Dark + Line Number FIX</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Consolas, monospace;
+      background-color: #1e1e1e;
+      color: #ffffff;
+      overflow: hidden;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #121212;
+      height: 100vh;
+      float: left;
+      display: flex;
+      flex-direction: column;
+      padding: 10px;
+    }
+
+    .sidebar h2 {
+      margin: 10px;
+      font-size: 18px;
+    }
+
+    .sidebar button {
+      margin: 5px 0;
+      padding: 10px;
+      background-color: #2d2d2d;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      text-align: left;
+    }
+
+    .sidebar button:hover {
+      background-color: #3c3c3c;
+    }
+
+    .editor {
+      margin-left: 250px;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .toolbar {
+      background-color: #2d2d2d;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .toolbar input {
+      padding: 5px;
+      border: none;
+      border-radius: 5px;
+      width: 200px;
+      background-color: #1e1e1e;
+      color: white;
+    }
+
+    .editor-area {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    .line-numbers {
+      width: 40px;
+      padding: 10px;
+      background-color: #2a2a2a;
+      color: #aaa;
+      text-align: right;
+      user-select: none;
+      overflow: hidden;
+      white-space: pre;
+      font-family: Consolas, monospace;
+    }
+
+    #editor {
+      flex: 1;
+      padding: 10px;
+      background-color: #1e1e1e;
+      color: white;
+      font-size: 16px;
+      overflow: auto;
+      outline: none;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-family: Consolas, monospace;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <h2>Text</h2>
+    <button onclick="newFile()">New</button>
+    <label>
+      <input type="file" id="fileInput" accept=".txt" onchange="loadFile(event)">
+      <button onclick="document.getElementById('fileInput').click()">Open</button>
+    </label>
+    <button onclick="saveText()">Save</button>
+    <button onclick="saveAs()">Save as</button>
+  </div>
+
+  <div class="editor">
+    <div class="toolbar">
+      <input type="text" id="search" placeholder="Find..." />
+      <input type="text" id="filename" placeholder="Untitled 1" />
+    </div>
+    <div class="editor-area">
+      <div class="line-numbers" id="lineNumbers">1</div>
+      <div id="editor" contenteditable="true" spellcheck="false"></div>
+    </div>
+  </div>
+
+  <script>
+    const editor = document.getElementById("editor");
+    const lineNumbers = document.getElementById("lineNumbers");
+
+    function updateLineNumbers() {
+      const text = editor.innerText || "";
+      const lines = text.split(/\n/).length;
+      let lineText = "";
+      for (let i = 1; i <= lines; i++) {
+        lineText += i + "\n";
+      }
+      lineNumbers.textContent = lineText;
+    }
+
+    function syncScroll() {
+      lineNumbers.scrollTop = editor.scrollTop;
+    }
+
+    function newFile() {
+      editor.textContent = "";
+      document.getElementById("filename").value = "Untitled 1";
+      updateLineNumbers();
+    }
+
+    function saveText() {
+      const text = editor.innerText;
+      let filename = document.getElementById("filename").value.trim();
+      if (!filename.endsWith(".txt")) filename += ".txt";
+
+      const blob = new Blob([text], { type: "text/plain" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      link.click();
+    }
+
+    function saveAs() {
+      const name = prompt("Simpan sebagai nama file:", "Untitled");
+      if (name !== null) {
+        document.getElementById("filename").value = name;
+        saveText();
+      }
+    }
+
+    function loadFile(event) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = function () {
+        editor.textContent = reader.result;
+        updateLineNumbers();
+        const nameWithoutExt = file.name.replace(/\.[^/.]+$/, "");
+        document.getElementById("filename").value = nameWithoutExt;
+      };
+      reader.readAsText(file);
+    }
+
+    document.getElementById("search").addEventListener("input", function () {
+      const keyword = this.value.toLowerCase();
+      const content = editor.innerText.toLowerCase();
+      const index = content.indexOf(keyword);
+      if (index !== -1) {
+        const range = document.createRange();
+        const sel = window.getSelection();
+        const node = editor.firstChild;
+        if (node) {
+          range.setStart(node, index);
+          range.setEnd(node, index + keyword.length);
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+      }
+    });
+
+    window.addEventListener("DOMContentLoaded", updateLineNumbers);
+    editor.addEventListener("input", updateLineNumbers);
+    editor.addEventListener("keyup", updateLineNumbers);
+    editor.addEventListener("mouseup", updateLineNumbers);
+    editor.addEventListener("scroll", syncScroll);
+  </script>
+
+</body>
+</html>
