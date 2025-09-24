@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot AI</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .chat-bubble {
+            max-width: 80%;
+            border-radius: 1.5rem;
+            padding: 0.75rem 1rem;
+            word-wrap: break-word;
+        }
+        .chat-bubble.user {
+            background-color: #6366f1;
+            color: white;
+            align-self: flex-end;
+        }
+        .chat-bubble.ai {
+            background-color: #e2e8f0;
+            color: #1a202c;
+            align-self: flex-start;
+        }
+        body.dark .chat-bubble.ai {
+            background-color: #334155;
+            color: white;
+        }
+        .message-image {
+            max-width: 100%;
+            border-radius: 1.5rem;
+            margin-top: 0.5rem;
+        }
+        /* Gaya untuk modal */
+        .modal {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        /* Style untuk scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+        body.dark ::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-slate-100 dark:bg-slate-900 flex items-center justify-center min-h-screen p-4 transition-colors duration-300">
+
+    <!-- Kontainer utama aplikasi chatbot -->
+    <div class="bg-white dark:bg-slate-800 shadow-xl rounded-2xl w-full max-w-5xl h-[90vh] flex flex-row">
+        <!-- Sidebar untuk Riwayat Chat -->
+        <div id="chat-history-sidebar" class="hidden md:flex flex-col w-1/4 bg-slate-200 dark:bg-slate-900 border-r border-slate-300 dark:border-slate-700 rounded-l-2xl p-4">
+            <h2 class="text-xl font-bold mb-4 text-slate-800 dark:text-white">Riwayat Chat</h2>
+            <button id="new-chat-button" class="bg-indigo-600 text-white p-2 rounded-full w-full mb-4 hover:bg-indigo-700 transition duration-300">
+                + Obrolan Baru
+            </button>
+            <div id="history-list" class="flex-grow overflow-y-auto space-y-2 mb-4">
+                <!-- Riwayat chat akan ditambahkan di sini -->
+            </div>
+        </div>
+
+        <!-- Kontainer Obrolan Utama -->
+        <div class="w-full md:w-3/4 flex flex-col">
+            <!-- Header -->
+            <div class="bg-indigo-600 dark:bg-slate-950 text-white p-4 rounded-t-2xl md:rounded-tl-none shadow-md flex justify-between items-center">
+                <div>
+                    <h1 class="text-xl font-bold">Bot Cerdas</h1>
+                    <p class="text-sm opacity-80 dark:text-slate-300">Siap membantu Anda!</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <!-- Tombol Pengaturan -->
+                    <button id="settings-button" class="p-2 rounded-full hover:bg-indigo-700 dark:hover:bg-slate-800 transition-colors duration-300" title="Pengaturan">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.82 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.82 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.82-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.82-3.31 2.37-2.37.996.608 2.296.223 2.903-1.066z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Area pesan chat -->
+            <div id="chat-messages" class="flex-grow overflow-y-auto p-4 space-y-4">
+                <!-- Pesan akan ditambahkan di sini oleh JavaScript -->
+            </div>
+
+            <!-- Formulir input pesan -->
+            <form id="message-form" class="p-4 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-b-2xl md:rounded-tr-none">
+                <div class="flex flex-col md:flex-row items-end space-y-2 md:space-y-0 md:space-x-2">
+                    <input
+                        type="text"
+                        id="message-input"
+                        placeholder="Ketik pesan Anda..."
+                        class="flex-grow w-full p-3 border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                    
+                    <div class="flex flex-row space-x-2">
+                        <!-- Kelompok tombol fitur -->
+                        <button
+                            type="button"
+                            id="summarize-button"
+                            class="bg-purple-500 text-white rounded-full p-3 w-10 h-10 flex items-center justify-center hover:bg-purple-600 transition duration-300 disabled:bg-purple-300"
+                            title="Ringkas Teks ✨"
+                        >
+                            📝✨
+                        </button>
+                        <button
+                            type="button"
+                            id="creative-button"
+                            class="bg-yellow-500 text-white rounded-full p-3 w-10 h-10 flex items-center justify-center hover:bg-yellow-600 transition duration-300 disabled:bg-yellow-300"
+                            title="Buat Konten Kreatif ✨"
+                        >
+                            🎨✨
+                        </button>
+                        <button
+                            type="button"
+                            id="generate-image-button"
+                            class="bg-pink-500 text-white rounded-full p-3 w-10 h-10 flex items-center justify-center hover:bg-pink-600 transition duration-300 disabled:bg-pink-300"
+                            title="Buat Gambar dari Teks ✨"
+                        >
+                            🖼️✨
+                        </button>
+                        <button
+                            type="button"
+                            id="code-button"
+                            class="bg-cyan-500 text-white rounded-full p-3 w-10 h-10 flex items-center justify-center hover:bg-cyan-600 transition duration-300 disabled:bg-cyan-300"
+                            title="Bantu Kode ✨"
+                        >
+                            💻✨
+                        </button>
+                        <button
+                            type="button"
+                            id="translate-button"
+                            class="bg-blue-500 text-white rounded-full p-3 w-10 h-10 flex items-center justify-center hover:bg-blue-600 transition duration-300 disabled:bg-blue-300"
+                            title="Terjemahkan ke Inggris ✨"
+                        >
+                            🌐✨
+                        </button>
+                        <button
+                            type="button"
+                            id="read-message-button"
+                            class="bg-green-500 text-white rounded-full p-3 w-10 h-10 flex items-center justify-center hover:bg-green-600 transition duration-300 disabled:bg-green-300"
+                            title="Baca Jawaban AI ✨"
+                        >
+                            🔊✨
+                        </button>
+                        <button
+                            type="submit"
+                            id="send-button"
+                            class="bg-indigo-600 text-white rounded-full p-3 w-10 h-10 flex items-center justify-center hover:bg-indigo-700 transition duration-300 disabled:bg-indigo-300"
+                            title="Kirim Pesan"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Pengaturan -->
+    <div id="settings-modal" class="modal fixed inset-0 hidden items-center justify-center p-4 z-50">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 w-full max-w-md shadow-xl">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-slate-800 dark:text-white">Pengaturan</h2>
+                <button id="close-settings-button" class="text-slate-500 hover:text-slate-800 dark:hover:text-white transition-colors duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Bagian Tema -->
+            <div class="mb-6 flex items-center justify-between">
+                <label for="theme-toggle" class="block text-md font-semibold text-slate-800 dark:text-white">Mode Gelap</label>
+                <button id="theme-toggle" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors duration-300">
+                    <svg id="moon-icon" class="h-6 w-6 text-slate-800 dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                    <svg id="sun-icon" class="h-6 w-6 text-yellow-300 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Bagian Persona -->
+            <div class="mb-6">
+                <label for="persona-selector" class="block text-md font-semibold text-slate-800 dark:text-white mb-2">Pilih Persona</label>
+                <select id="persona-selector" class="w-full p-2 border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <option value="default">Default</option>
+                    <option value="professional">Asisten Profesional</option>
+                    <option value="creative">Ahli Kreatif</option>
+                    <option value="teacher">Seorang Guru</option>
+                </select>
+            </div>
+
+            <!-- Bagian Instruksi Kustom -->
+            <div class="mb-6">
+                <label for="custom-instructions" class="block text-md font-semibold text-slate-800 dark:text-white mb-2">Instruksi Kustom</label>
+                <textarea id="custom-instructions" class="w-full h-24 p-2 text-sm rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white resize-none" placeholder="Masukkan instruksi khusus di sini. (mis. 'Bertindak sebagai ahli sejarah abad ke-19')"></textarea>
+            </div>
+
+            <button id="save-instructions-button" class="bg-indigo-600 text-white p-3 rounded-full w-full hover:bg-indigo-700 transition duration-300">
+                Simpan
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal Ubah Nama -->
+    <div id="rename-modal" class="modal fixed inset-0 hidden items-center justify-center p-4 z-50">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 w-full max-w-sm shadow-xl">
+            <h2 class="text-xl font-bold text-slate-800 dark:text-white mb-4">Ubah Nama Obrolan</h2>
+            <input type="text" id="rename-input" class="w-full p-3 border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Masukkan nama baru..."/>
+            <div class="flex justify-end space-x-2">
+                <button id="cancel-rename-button" class="bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-white p-3 rounded-full hover:bg-slate-300 dark:hover:bg-slate-600 transition duration-300">Batal</button>
+                <button id="save-rename-button" class="bg-indigo-600 text-white p-3 rounded-full hover:bg-indigo-700 transition duration-300">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logika JavaScript -->
+    <script>
+        const messageForm = document.getElementById('message-form');
+        const messageInput = document.getElementById('message-input');
+        const chatMessages = document.getElementById('chat-messages');
+        const sendButton = document.getElementById('send-button');
+        const generateImageButton = document.getElementById('generate-image-button');
+        const readMessageButton = document.getElementById('read-message-button');
+        const summarizeButton = document.getElementById('summarize-button');
+        const creativeButton = document.getElementById('creative-button');
+        const codeButton = document.getElementById('code-button');
+        const translateButton = document.getElementById('translate-button');
+        const newChatButton = document.getElementById('new-chat-button');
+        const historyList = document.getElementById('history-list');
+        
+        // Elemen Modal
+        const settingsButton = document.getElementById('settings-button');
+        const settingsModal = document.getElementById('settings-modal');
+        const closeSettingsButton = document.getElementById('close-settings-button');
+        const personaSelector = document.getElementById('persona-selector');
+        const customInstructionsTextarea = document.getElementById('custom-instructions');
+        const saveInstructionsButton = document.getElementById('save-instructions-button');
+        const themeToggle = document.getElementById('theme-toggle');
+        const moonIcon = document.getElementById('moon-icon');
+        const sunIcon = document.getElementById('sun-icon');
+        
+        // Elemen Modal Ubah Nama
+        const renameModal = document.getElementById('rename-modal');
+        const renameInput = document.getElementById('rename-input');
+        const saveRenameButton = document.getElementById('save-rename-button');
+        const cancelRenameButton = document.getElementById('cancel-rename-button');
+
+        // Konstanta untuk API Gemini
+        const apiKey = "AIzaSyAakZ6k3EbE6lYNietp7Ualuq9NDu7JfL0";
+        const textApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+        const imageApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
+        const ttsApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+
+        let currentAiResponse = "";
+        const localStorageKey = 'chatbotHistory';
+        const customInstructionsKey = 'customInstructions';
+        const personaKey = 'selectedPersona';
+        const sessionStorageKey = 'currentChatId';
+        let chatHistory = {};
+        let currentChatId = null;
+        let selectedPersona = 'default';
+        let customInstructions = '';
+
+        // Objek untuk mendefinisikan persona
+        const personas = {
+            'default': null,
+            'professional': 'Bertindak sebagai asisten profesional dan ringkas. Berikan jawaban yang terstruktur dan lugas.',
+            'creative': 'Bertindak sebagai ahli konten kreatif. Gunakan bahasa yang imajinatif dan deskriptif. Fokus pada penceritaan dan ide-ide unik.',
+            'teacher': 'Bertindak sebagai guru yang sabar dan berpengetahuan. Jelaskan konsep dengan cara yang sederhana dan mudah dimengerti. Gunakan analogi dan contoh untuk membantu pemahaman.'
+        };
+
+        function disableButtons(state) {
+            messageInput.disabled = state;
+            sendButton.disabled = state;
+            generateImageButton.disabled = state;
+            readMessageButton.disabled = state;
+            summarizeButton.disabled = state;
+            creativeButton.disabled = state;
+            codeButton.disabled = state;
+            translateButton.disabled = state;
+        }
+        
+        // Fungsi untuk mengelola tema
+        function applyTheme(isDarkMode) {
+            const body = document.body;
+            if (isDarkMode) {
+                body.classList.add('dark');
+                moonIcon.classList.add('hidden');
+                sunIcon.classList.remove('hidden');
+            } else {
+                body.classList.remove('dark');
+                moonIcon.classList.remove('hidden');
+                sunIcon.classList.add('hidden');
+            }
+        }
+
+        // Fungsi untuk menambahkan pesan teks ke antarmuka chat
+        function addMessageToChat(text, sender) {
+            const messageContainer = document.createElement('div');
+            messageContainer.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
+
+            const messageBubble = document.createElement('div');
+            messageBubble.className = `chat-bubble ${sender}`;
+            
+            messageBubble.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+            chatMessages.appendChild(messageContainer);
+            messageContainer.appendChild(messageBubble);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Fungsi untuk menambahkan gambar ke antarmuka chat
+        function addImageToChat(base64Image, altText) {
+            const imageContainer = document.createElement('div');
+            imageContainer.className = `flex justify-center my-4 w-full`;
+
+            const img = document.createElement('img');
+            img.src = `data:image/png;base64,${base64Image}`;
+            img.alt = altText;
+            img.className = 'message-image shadow-md';
+            
+            imageContainer.appendChild(img);
+            chatMessages.appendChild(imageContainer);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Fungsi untuk mengonversi PCM ke WAV
+        function pcmToWav(pcmData, sampleRate) {
+            const numChannels = 1;
+            const bytesPerSample = 2;
+            const dataLength = pcmData.byteLength;
+            const buffer = new ArrayBuffer(44 + dataLength);
+            const view = new DataView(buffer);
+
+            // RIFF chunk
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + dataLength, true);
+            writeString(view, 8, 'WAVE');
+
+            // fmt chunk
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true); // PCM format
+            view.setUint16(22, numChannels, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * numChannels * bytesPerSample, true);
+            view.setUint16(32, numChannels * bytesPerSample, true);
+            view.setUint16(34, bytesPerSample * 8, true);
+
+            // data chunk
+            writeString(view, 36, 'data');
+            view.setUint32(40, dataLength, true);
+
+            const pcmView = new Int16Array(pcmData);
+            for (let i = 0; i < pcmView.length; i++) {
+                view.setInt16(44 + i * 2, pcmView[i], true);
+            }
+
+            return new Blob([view], { type: 'audio/wav' });
+
+            function writeString(view, offset, str) {
+                for (let i = 0; i < str.length; i++) {
+                    view.setUint8(offset + i, str.charCodeAt(i));
+                }
+            }
+        }
+
+        // Fungsi untuk mengelola riwayat chat
+        function loadChatHistory() {
+            const storedHistory = localStorage.getItem(localStorageKey);
+            if (storedHistory) {
+                chatHistory = JSON.parse(storedHistory);
+            } else {
+                chatHistory = {};
+            }
+        }
+
+        function saveChatHistory() {
+            localStorage.setItem(localStorageKey, JSON.stringify(chatHistory));
+        }
+
+        function renderHistoryList() {
+            historyList.innerHTML = '';
+            const sortedKeys = Object.keys(chatHistory).sort((a, b) => {
+                return new Date(chatHistory[b].timestamp) - new Date(chatHistory[a].timestamp);
+            });
+            sortedKeys.forEach(chatId => {
+                const chat = chatHistory[chatId];
+                const chatItem = document.createElement('div');
+                chatItem.className = `flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors duration-200 ${chatId === currentChatId ? 'bg-indigo-600 text-white' : 'bg-slate-300 dark:bg-slate-700 hover:bg-slate-400 dark:hover:bg-slate-600'}`;
+                
+                const titleSpan = document.createElement('span');
+                titleSpan.className = 'truncate flex-grow';
+                titleSpan.textContent = chat.title || `Obrolan ${new Date(chat.timestamp).toLocaleDateString()}`;
+                titleSpan.dataset.chatId = chatId;
+                titleSpan.addEventListener('click', () => loadChat(chatId));
+
+                const actionsContainer = document.createElement('div');
+                actionsContainer.className = 'flex items-center space-x-2 ml-2';
+
+                const renameButton = document.createElement('button');
+                renameButton.className = 'p-1 rounded-full text-slate-500 hover:text-yellow-500 transition-colors duration-200';
+                renameButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>`;
+                renameButton.title = 'Ubah Nama Obrolan';
+                renameButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    showRenameModal(chatId);
+                });
+
+                const deleteButton = document.createElement('button');
+                deleteButton.className = 'p-1 rounded-full text-slate-500 hover:text-red-500 transition-colors duration-200';
+                deleteButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.013 21H7.987a2 2 0 01-1.92-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>`;
+                deleteButton.title = 'Hapus Obrolan';
+                deleteButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (confirm("Apakah Anda yakin ingin menghapus obrolan ini?")) {
+                        deleteChat(chatId);
+                    }
+                });
+                
+                chatItem.appendChild(titleSpan);
+                actionsContainer.appendChild(renameButton);
+                actionsContainer.appendChild(deleteButton);
+                chatItem.appendChild(actionsContainer);
+                historyList.appendChild(chatItem);
+            });
+        }
+
+        function deleteChat(chatId) {
+            delete chatHistory[chatId];
+            saveChatHistory();
+            if (currentChatId === chatId) {
+                startNewChat();
+            } else {
+                renderHistoryList();
+            }
+        }
+        
+        function showRenameModal(chatId) {
+            const currentTitle = chatHistory[chatId].title;
+            renameInput.value = currentTitle;
+            renameModal.classList.remove('hidden');
+            renameModal.classList.add('flex');
+            renameInput.focus();
+            
+            saveRenameButton.onclick = () => {
+                const newTitle = renameInput.value.trim();
+                if (newTitle) {
+                    chatHistory[chatId].title = newTitle;
+                    saveChatHistory();
+                    renderHistoryList();
+                }
+                renameModal.classList.remove('flex');
+                renameModal.classList.add('hidden');
+            };
+
+            cancelRenameButton.onclick = () => {
+                renameModal.classList.remove('flex');
+                renameModal.classList.add('hidden');
+            };
+        }
+
+        function loadChat(chatId) {
+            saveCurrentChat();
+            currentChatId = chatId;
+            sessionStorage.setItem(sessionStorageKey, currentChatId);
+            chatMessages.innerHTML = '';
+            if (chatHistory[currentChatId]) {
+                const messages = chatHistory[currentChatId].messages;
+                messages.forEach(msg => {
+                    if (msg.type === 'text') {
+                        addMessageToChat(msg.content, msg.sender);
+                    } else if (msg.type === 'image') {
+                        addImageToChat(msg.content, msg.altText);
+                    }
+                });
+            } else {
+                addMessageToChat("Halo! Saya adalah Bot Cerdas, siap untuk membantu Anda. Silakan ketik pesan Anda!", 'ai');
+            }
+            renderHistoryList();
+        }
+
+        function startNewChat() {
+            saveCurrentChat();
+            currentChatId = crypto.randomUUID();
+            sessionStorage.setItem(sessionStorageKey, currentChatId);
+            chatHistory[currentChatId] = {
+                title: "Obrolan Baru",
+                timestamp: new Date().toISOString(),
+                messages: []
+            };
+            loadChat(currentChatId);
+        }
+
+        function saveCurrentChat() {
+            if (currentChatId) {
+                const messages = [];
+                // Menggunakan children properti untuk mendapatkan hanya elemen anak, menghindari node teks
+                chatMessages.childNodes.forEach(node => {
+                    // Hanya memproses jika node adalah elemen HTML (tipe node 1)
+                    if (node.nodeType === Node.ELEMENT_NODE) {
+                        const bubble = node.querySelector('.chat-bubble');
+                        const image = node.querySelector('.message-image');
+                        if (bubble) {
+                            messages.push({
+                                type: 'text',
+                                sender: bubble.classList.contains('user') ? 'user' : 'ai',
+                                content: bubble.innerHTML,
+                            });
+                        } else if (image) {
+                            messages.push({
+                                type: 'image',
+                                sender: 'ai', // Assuming image is always from AI
+                                content: image.src.split(',')[1],
+                                altText: image.alt,
+                            });
+                        }
+                    }
+                });
+                if (messages.length > 0) {
+                    chatHistory[currentChatId].messages = messages;
+                    if (chatHistory[currentChatId].title === "Obrolan Baru") {
+                        const firstMessage = messages.find(msg => msg.sender === 'user');
+                        if (firstMessage) {
+                            let title = firstMessage.content.replace(/<[^>]+>/g, '').substring(0, 30);
+                            if (firstMessage.content.length > 30) {
+                                title += '...';
+                            }
+                            chatHistory[currentChatId].title = title;
+                        }
+                    }
+                }
+                saveChatHistory();
+                renderHistoryList();
+            }
+        }
+
+        // Fungsi untuk mendapatkan instruksi sistem yang sesuai
+        function getSystemInstruction() {
+            if (customInstructions) {
+                return customInstructions;
+            }
+            return personas[selectedPersona];
+        }
+
+        // Fungsi untuk mengirim pesan ke API
+        async function sendMessage(prompt) {
+            disableButtons(true);
+            const loadingMessageId = 'loading-' + Date.now();
+            addMessageToChat('<span id="' + loadingMessageId + '">...</span>', 'ai');
+            saveCurrentChat();
+            
+            try {
+                const payload = {
+                    contents: [{ parts: [{ text: prompt }] }],
+                    tools: [{ "google_search": {} }],
+                };
+
+                const systemInstruction = getSystemInstruction();
+                if (systemInstruction) {
+                    payload.systemInstruction = {
+                        parts: [{ text: systemInstruction }]
+                    };
+                }
+
+                const response = await fetch(textApiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error API: ${response.status}`);
+                }
+
+                const result = await response.json();
+                const aiResponseText = result.candidates?.[0]?.content?.parts?.[0]?.text || "Maaf, saya tidak dapat menghasilkan respons.";
+                currentAiResponse = aiResponseText;
+
+                const loadingMessage = document.getElementById(loadingMessageId);
+                if (loadingMessage) {
+                    loadingMessage.parentElement.parentElement.remove();
+                }
+                addMessageToChat(aiResponseText, 'ai');
+                saveCurrentChat();
+
+            } catch (error) {
+                console.error("Kesalahan dalam memanggil API:", error);
+                const loadingMessage = document.getElementById(loadingMessageId);
+                if (loadingMessage) {
+                    loadingMessage.parentElement.parentElement.remove();
+                }
+                addMessageToChat("Maaf, terjadi kesalahan saat berkomunikasi dengan AI. Silakan coba lagi.", 'ai');
+                saveCurrentChat();
+            } finally {
+                disableButtons(false);
+                messageInput.focus();
+            }
+        }
+
+        // Fungsi untuk menghasilkan gambar dari teks
+        async function generateImage() {
+            const prompt = messageInput.value.trim();
+            if (!prompt) {
+                addMessageToChat("Silakan ketik deskripsi gambar yang ingin Anda buat terlebih dahulu.", 'ai');
+                return;
+            }
+
+            disableButtons(true);
+            addMessageToChat("Membuat gambar...", 'ai');
+            saveCurrentChat();
+
+            try {
+                const payload = { instances: { prompt: prompt }, parameters: { "sampleCount": 1 } };
+                const response = await fetch(imageApiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Error API: ${response.status}`);
+                }
+
+                const result = await response.json();
+                const base64Data = result?.predictions?.[0]?.bytesBase64Encoded;
+
+                if (base64Data) {
+                    addImageToChat(base64Data, prompt);
+                    saveCurrentChat();
+                } else {
+                    throw new Error("Tidak ada data gambar yang diterima.");
+                }
+            } catch (error) {
+                console.error("Kesalahan dalam membuat gambar:", error);
+                addMessageToChat("Maaf, terjadi kesalahan saat membuat gambar. Silakan coba lagi.", 'ai');
+                saveCurrentChat();
+            } finally {
+                disableButtons(false);
+                messageInput.focus();
+            }
+        }
+
+        // Fungsi untuk membaca respons AI terakhir
+        async function readLastMessage() {
+            if (!currentAiResponse) {
+                addMessageToChat("Tidak ada respons AI yang bisa dibacakan.", 'ai');
+                return;
+            }
+
+            disableButtons(true);
+            addMessageToChat("Membacakan...", 'ai');
+
+            try {
+                const payload = {
+                    contents: [{ parts: [{ text: currentAiResponse }] }],
+                    generationConfig: {
+                        responseModalities: ["AUDIO"],
+                        speechConfig: {
+                            voiceConfig: { prebuiltVoiceConfig: { voiceName: "Kore" } }
+                        }
+                    }
+                };
+                
+                const response = await fetch(ttsApiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error API: ${response.status}`);
+                }
+
+                const result = await response.json();
+                const part = result?.candidates?.[0]?.content?.parts?.[0];
+                const audioData = part?.inlineData?.data;
+                const mimeType = part?.inlineData?.mimeType;
+
+                if (audioData && mimeType && mimeType.startsWith("audio/")) {
+                    const sampleRate = parseInt(mimeType.match(/rate=(\d+)/)[1], 10);
+                    const pcmData = Uint8Array.from(atob(audioData), c => c.charCodeAt(0)).buffer;
+                    const pcm16 = new Int16Array(pcmData);
+                    const wavBlob = pcmToWav(pcm16, sampleRate);
+                    const audioUrl = URL.createObjectURL(wavBlob);
+                    
+                    const audio = new Audio(audioUrl);
+                    audio.play();
+                } else {
+                    throw new Error("Tidak ada data audio yang diterima.");
+                }
+            } catch (error) {
+                console.error("Kesalahan dalam memutar audio:", error);
+                addMessageToChat("Maaf, terjadi kesalahan saat memutar audio. Silakan coba lagi.", 'ai');
+            } finally {
+                disableButtons(false);
+                messageInput.focus();
+            }
+        }
+
+        // Fungsi untuk meringkas teks
+        async function summarizeText() {
+            const textToSummarize = messageInput.value.trim();
+            if (!textToSummarize) {
+                addMessageToChat("Silakan ketik teks yang ingin Anda ringkas.", 'ai');
+                return;
+            }
+
+            disableButtons(true);
+            addMessageToChat("Meringkas teks...", 'ai');
+            saveCurrentChat();
+
+            try {
+                const prompt = `Ringkas teks berikut dalam satu paragraf: ${textToSummarize}`;
+                const payload = {
+                    contents: [{ parts: [{ text: prompt }] }],
+                    tools: [{ "google_search": {} }],
+                };
+                const systemInstruction = getSystemInstruction();
+                if (systemInstruction) {
+                    payload.systemInstruction = {
+                        parts: [{ text: systemInstruction }]
+                    };
+                }
+
+                const response = await fetch(textApiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Error API: ${response.status}`);
+                }
+
+                const result = await response.json();
+                const summaryText = result.candidates?.[0]?.content?.parts?.[0]?.text || "Maaf, saya tidak dapat membuat ringkasan.";
+                currentAiResponse = summaryText;
+                
+                addMessageToChat(summaryText, 'ai');
+                saveCurrentChat();
+
+            } catch (error) {
+                console.error("Kesalahan dalam meringkas teks:", error);
+                addMessageToChat("Maaf, terjadi kesalahan saat meringkas teks. Silakan coba lagi.", 'ai');
+                saveCurrentChat();
+            } finally {
+                disableButtons(false);
+                messageInput.focus();
+            }
+        }
+
+        // Fungsi untuk membuat konten kreatif
+        async function createCreativeContent() {
+            const idea = messageInput.value.trim();
+            if (!idea) {
+                addMessageToChat("Silakan ketik ide untuk konten kreatif.", 'ai');
+                return;
+            }
+
+            disableButtons(true);
+            addMessageToChat("Membuat konten kreatif...", 'ai');
+            saveCurrentChat();
+
+            try {
+                const prompt = `Buatlah sebuah tulisan kreatif pendek (misalnya, puisi, cerita pendek, atau lirik lagu) berdasarkan ide berikut: ${idea}`;
+                const payload = {
+                    contents: [{ parts: [{ text: prompt }] }],
+                    tools: [{ "google_search": {} }],
+                };
+                const systemInstruction = getSystemInstruction();
+                if (systemInstruction) {
+                    payload.systemInstruction = {
+                        parts: [{ text: systemInstruction }]
+                    };
+                }
+
+                const response = await fetch(textApiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Error API: ${response.status}`);
+                }
+
+                const result = await response.json();
+                const creativeContent = result.candidates?.[0]?.content?.parts?.[0]?.text || "Maaf, saya tidak dapat membuat konten kreatif.";
+                currentAiResponse = creativeContent;
+                
+                addMessageToChat(creativeContent, 'ai');
+                saveCurrentChat();
+
+            } catch (error) {
+                console.error("Kesalahan dalam membuat konten kreatif:", error);
+                addMessageToChat("Maaf, terjadi kesalahan saat membuat konten kreatif. Silakan coba lagi.", 'ai');
+                saveCurrentChat();
+            } finally {
+                disableButtons(false);
+                messageInput.focus();
+            }
+        }
+
+        // Fungsi untuk bantuan kode
+        async function assistWithCode() {
+            const codePrompt = messageInput.value.trim();
+            if (!codePrompt) {
+                addMessageToChat("Silakan ketik pertanyaan kode Anda. Misalnya, 'tulis fungsi Python untuk faktorial' atau 'jelaskan cara kerja JavaScript asinkron'.", 'ai');
+                return;
+            }
+
+            disableButtons(true);
+            addMessageToChat("Menganalisis kode...", 'ai');
+            saveCurrentChat();
+
+            try {
+                const payload = {
+                    contents: [{ parts: [{ text: `Sebagai asisten kode, silakan jawab pertanyaan berikut. Sertakan contoh kode dalam markdown jika relevan: ${codePrompt}` }] }],
+                    tools: [{ "google_search": {} }],
+                };
+                const systemInstruction = getSystemInstruction();
+                if (systemInstruction) {
+                    payload.systemInstruction = {
+                        parts: [{ text: systemInstruction }]
+                    };
+                }
+
+                const response = await fetch(textApiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Error API: ${response.status}`);
+                }
+
+                const result = await response.json();
+                const codeResponse = result.candidates?.[0]?.content?.parts?.[0]?.text || "Maaf, saya tidak dapat membantu dengan kode saat ini.";
+                currentAiResponse = codeResponse;
+                
+                addMessageToChat(codeResponse, 'ai');
+                saveCurrentChat();
+
+            } catch (error) {
+                console.error("Kesalahan dalam membantu kode:", error);
+                addMessageToChat("Maaf, terjadi kesalahan saat membantu kode. Silakan coba lagi.", 'ai');
+                saveCurrentChat();
+            } finally {
+                disableButtons(false);
+                messageInput.focus();
+            }
+        }
+
+        // Fungsi untuk menerjemahkan teks
+        async function translateText() {
+            const textToTranslate = messageInput.value.trim();
+            if (!textToTranslate) {
+                addMessageToChat("Silakan ketik teks yang ingin Anda terjemahkan ke dalam bahasa Inggris.", 'ai');
+                return;
+            }
+
+            disableButtons(true);
+            addMessageToChat("Menerjemahkan teks...", 'ai');
+            saveCurrentChat();
+
+            try {
+                const prompt = `Terjemahkan teks berikut ke dalam bahasa Inggris: ${textToTranslate}`;
+                const payload = {
+                    contents: [{ parts: [{ text: prompt }] }],
+                };
+                const systemInstruction = getSystemInstruction();
+                if (systemInstruction) {
+                    payload.systemInstruction = {
+                        parts: [{ text: systemInstruction }]
+                    };
+                }
+
+                const response = await fetch(textApiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Error API: ${response.status}`);
+                }
+
+                const result = await response.json();
+                const translatedText = result.candidates?.[0]?.content?.parts?.[0]?.text || "Maaf, saya tidak dapat menerjemahkan teks ini.";
+                currentAiResponse = translatedText;
+                
+                addMessageToChat(translatedText, 'ai');
+                saveCurrentChat();
+
+            } catch (error) {
+                console.error("Kesalahan dalam menerjemahkan:", error);
+                addMessageToChat("Maaf, terjadi kesalahan saat menerjemahkan teks. Silakan coba lagi.", 'ai');
+                saveCurrentChat();
+            } finally {
+                disableButtons(false);
+                messageInput.focus();
+            }
+        }
+
+        // Event listener untuk pengiriman formulir
+        messageForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const prompt = messageInput.value.trim();
+            if (prompt) {
+                addMessageToChat(prompt, 'user');
+                messageInput.value = '';
+                sendMessage(prompt);
+            }
+        });
+
+        // Event listener untuk modal dan penyimpanan
+        settingsButton.addEventListener('click', () => {
+            settingsModal.classList.remove('hidden');
+            settingsModal.classList.add('flex');
+        });
+
+        closeSettingsButton.addEventListener('click', () => {
+            settingsModal.classList.remove('flex');
+            settingsModal.classList.add('hidden');
+        });
+
+        saveInstructionsButton.addEventListener('click', () => {
+            customInstructions = customInstructionsTextarea.value.trim();
+            selectedPersona = personaSelector.value;
+            localStorage.setItem(customInstructionsKey, customInstructions);
+            localStorage.setItem(personaKey, selectedPersona);
+            addMessageToChat("Pengaturan telah diperbarui dan disimpan.", 'ai');
+            settingsModal.classList.remove('flex');
+            settingsModal.classList.add('hidden');
+        });
+        
+        generateImageButton.addEventListener('click', generateImage);
+        readMessageButton.addEventListener('click', readLastMessage);
+        summarizeButton.addEventListener('click', summarizeText);
+        creativeButton.addEventListener('click', createCreativeContent);
+        codeButton.addEventListener('click', assistWithCode);
+        translateButton.addEventListener('click', translateText);
+        newChatButton.addEventListener('click', startNewChat);
+
+        // Logika tema
+        themeToggle.addEventListener('click', () => {
+            const isDarkMode = document.body.classList.contains('dark');
+            if (isDarkMode) {
+                applyTheme(false);
+                localStorage.theme = 'light';
+            } else {
+                applyTheme(true);
+                localStorage.theme = 'dark';
+            }
+        });
+
+        // Terapkan tema dan muat data saat halaman dimuat
+        window.onload = () => {
+            const savedTheme = localStorage.theme;
+            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                applyTheme(true);
+            } else {
+                applyTheme(false);
+            }
+            
+            loadChatHistory();
+            currentChatId = sessionStorage.getItem(sessionStorageKey);
+            customInstructions = localStorage.getItem(customInstructionsKey) || '';
+            selectedPersona = localStorage.getItem(personaKey) || 'default';
+
+            customInstructionsTextarea.value = customInstructions;
+            personaSelector.value = selectedPersona;
+
+            if (!currentChatId || !chatHistory[currentChatId]) {
+                startNewChat();
+            } else {
+                loadChat(currentChatId);
+            }
+            renderHistoryList();
+        };
+    </script>
+
+</body>
+</html>
