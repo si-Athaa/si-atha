@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chattable Test by Atha</title>
+
+  <!-- ✅ Ini script utama dari Chattable -->
+  <script src="https://iframe.chat/scripts/main.min.js"></script>
+
+  <!-- (Opsional) Kalau punya CSS sendiri -->
+  <!-- <link rel="stylesheet" href="chattable.css"> -->
+
+  <style>
+    body {
+      background: #0f172a;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    iframe {
+      width: 90%;
+      height: 90%;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+  <!-- ✅ Ini link iframe chat lu -->
+  <iframe src="https://iframe.chat/embed?chat=starterchat" id="chattable" allow="camera; microphone" style="width:90%;height:90%;border:none;border-radius:12px;background:url('sky_pixel.jpg') center/cover no-repeat;box-shadow:0 0 25px rgba(0,0,0,0.3);">></iframe>
+
+  <!-- ✅ Inisialisasi (pilih salah satu di bawah) -->
+
+  <!-- 1. Kalau mau pakai CSS buatan sendiri -->
+  <!--
+  <script>
+    chattable.initialize({
+      stylesheet: "/path/to/your/chattable.css"
+    });
+  </script>
+  -->
+
+  <!-- 2. Kalau mau pakai tema bawaan (contoh: moderno) -->
+  <script>
+    chattable.initialize({
+      theme: "moderno"
+    });
+  </script>
+</body>
+</html>
