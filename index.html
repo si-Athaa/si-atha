@@ -3,198 +3,180 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Portfolio - Simple Template</title>
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <title>AthaOS - Pixel Desktop</title>
   <style>
-    :root{
-      --bg:#0f1724;
-      --card:#0b1220;
-      --muted:#9aa4b2;
-      --accent:#6ee7b7;
-      --glass: rgba(255,255,255,0.03);
+    :root {
+      --bg-color: #008080; /* Warna retro Windows */
+      --taskbar-color: #C0C0C0;
+      --start-btn-color: #000080;
+      --text-color: #000000;
+      --border-light: #FFFFFF;
+      --border-dark: #808080;
     }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial}
-    body{
-      /* Perubahan di sini: Hapus background gradient dan ganti dengan gambar */
+    
+    /* Reset & Wallpaper */
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: monospace; /* Font pixel/monospasi */
+      color: var(--text-color);
+      /* Gunakan gambar sky_pixelbck.jpg sebagai wallpaper */
       background-image: url('sky_pixelbck.jpg');
       background-size: cover;
+      background-position: center;
       background-repeat: no-repeat;
-      background-attachment: fixed;
-      color:#e6eef6;
-      /* Akhir perubahan */
-    }
-    a{color:inherit;text-decoration:none}
-    .container{max-width:980px;margin:0 auto;padding:28px}
-
-    /* nav */
-    header{position:sticky;top:12px;z-index:40}
-    .nav{display:flex;align-items:center;justify-content:space-between;background:rgba(2,6,23,0.6);backdrop-filter:blur(10px);padding:12px;border-radius:12px;border:1px solid var(--glass)}
-    .nav ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}
-    .nav a{font-weight:600;padding:6px 12px;border-radius:6px;transition:0.3s}
-    .nav a:hover{background:var(--glass)}
-    .burger{display:none;font-size:24px;cursor:pointer}
-    @media (max-width: 600px){
-      .nav ul{display:none;flex-direction:column;position:absolute;right:28px;top:68px;background:rgba(2,6,23,0.9);padding:10px;border-radius:8px;border:1px solid var(--glass)}
-      .burger{display:block}
+      overflow: hidden; /* Mencegah scroll pada desktop */
+      image-rendering: pixelated; /* Efek pixel */
     }
 
-    /* main */
-    main{padding-top:40px;min-height:calc(100vh - 120px)}
+    /* Struktur Desktop */
+    #desktop {
+      height: calc(100% - 30px); /* Tinggi desktop minus taskbar */
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+    }
 
-    /* hero */
-    #hero{padding-top:60px;padding-bottom:60px;text-align:center}
-    #hero .avatar{width:150px;height:150px;border-radius:50%;margin-bottom:20px;object-fit:cover;border:4px solid var(--accent)}
-    #hero h1{font-size:48px;margin-bottom:10px;font-weight:700}
-    #hero h2{font-size:20px;color:var(--muted);margin-bottom:30px;font-weight:400}
-    .tag-line{display:inline-block;padding:8px 16px;background:var(--accent);color:#0f172a;border-radius:999px;font-weight:700;margin-top:20px}
-    .socials a{margin:0 10px;font-size:24px;transition:0.3s;color:var(--muted)}
-    .socials a:hover{color:var(--accent)}
+    /* Gaya Umum Windows Retro */
+    .pixel-border {
+      border: 3px solid;
+      border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light);
+    }
+    
+    /* Ikon Desktop */
+    .desktop-icon {
+      width: 80px;
+      text-align: center;
+      margin-bottom: 10px;
+      cursor: pointer;
+      padding: 5px;
+      user-select: none;
+      font-size: 12px;
+    }
+    .desktop-icon:hover {
+      background-color: rgba(0, 0, 0, 0.1);
+      border: 1px dashed var(--text-color);
+    }
+    .desktop-icon img {
+      width: 32px;
+      height: 32px;
+      display: block;
+      margin: 0 auto 5px;
+      image-rendering: pixelated;
+    }
 
-    /* section */
-    section{padding:40px 0;margin-bottom:40px;border-radius:12px;background:var(--card);border:1px solid var(--glass);box-shadow:0 10px 30px rgba(0,0,0,0.2)}
-    section h2{font-size:32px;border-bottom:2px solid var(--accent);display:inline-block;padding-bottom:5px;margin-bottom:20px;font-weight:600}
-    section p{line-height:1.6;color:var(--muted)}
+    /* Taskbar */
+    #taskbar {
+      height: 30px;
+      background-color: var(--taskbar-color);
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      border-top: 2px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 4px;
+      z-index: 1000;
+    }
 
-    /* projects */
-    .project-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:20px}
-    .project-card{background:#1e293b;padding:20px;border-radius:8px;transition:0.3s;border:1px solid rgba(255,255,255,0.1)}
-    .project-card:hover{transform:translateY(-5px);box-shadow:0 15px 35px rgba(0,0,0,0.3);background:#2d3a4c}
-    .project-card h3{font-size:20px;margin-top:0;color:var(--accent)}
-    .project-card a{display:inline-block;margin-top:10px;color:var(--accent);text-decoration:underline}
+    /* Tombol Start */
+    #start-button {
+      background-color: var(--taskbar-color);
+      color: var(--text-color);
+      font-weight: bold;
+      padding: 2px 10px;
+      font-size: 14px;
+      cursor: pointer;
+      /* Border Windows klasik */
+      border-style: solid;
+      border-width: 2px;
+      border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light);
+    }
+    #start-button:active {
+      border-color: var(--border-dark) var(--border-light) var(--border-light) var(--border-dark);
+      padding: 3px 9px 1px 11px; /* Efek ditekan */
+    }
 
-    /* contact */
-    #contact form input, #contact form textarea{width:100%;padding:12px;margin-bottom:15px;border:1px solid var(--muted);background:var(--card);color:#e6eef6;border-radius:6px}
-    #contact form input:focus, #contact form textarea:focus{border-color:var(--accent);outline:none}
-    .btn{background:var(--accent);color:#0f172a;padding:10px 20px;border:none;border-radius:6px;cursor:pointer;font-weight:600;transition:0.3s}
-    .btn:hover{opacity:0.9}
-
-    /* footer */
-    footer{text-align:center;padding:20px 0;color:var(--muted);border-top:1px solid var(--glass)}
+    /* Area Clock */
+    #taskbar-right {
+      display: flex;
+      align-items: center;
+      background-color: var(--taskbar-color);
+      padding: 0 5px;
+      border-style: solid;
+      border-width: 1px;
+      border-color: var(--border-dark) var(--border-light) var(--border-light) var(--border-dark);
+      font-size: 12px;
+      height: 22px;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <nav class="nav">
-        <a href="#hero" style="font-size:1.5em;color:var(--accent);font-weight:700">Atha.</a>
-        <ul id="main-nav">
-          <li><a href="#about">About</a></li>
-          <li><a href="#skills">Skills</a></li>
-          <li><a href="#projects">Projects</a></li>
-          <li><a href="#contact">Contact</a></li>
-        </ul>
-        <div class="burger" onclick="toggleMobile()">☰</div>
-      </nav>
-    </header>
 
-    <main>
-      <section id="hero">
-        <img src="https://i.ibb.co/L50vGvP/avatar.png" alt="Profile Avatar" class="avatar">
-        <h1>Atha</h1>
-        <h2>A Front-End Developer & UI/UX Enthusiast</h2>
-        <div class="socials">
-          <a href="#" target="_blank" title="GitHub">🐙</a>
-          <a href="#" target="_blank" title="LinkedIn">💼</a>
-          <a href="#" target="_blank" title="Twitter">🐦</a>
-        </div>
-        <span class="tag-line">Web is fun!</span>
-      </section>
+  <div id="desktop">
+    <div class="desktop-icon" onclick="openApp('chatbox_ai.html')">
+      <img src="https://via.placeholder.com/32/FF00FF/000000?text=AI" alt="Chatbot Icon">
+      <span>Chatbot AI</span>
+    </div>
 
-      <section id="about">
-        <h2>About Me</h2>
-        <p>Halo! Saya Atha, seorang *Front-End Developer* dengan fokus menciptakan pengalaman pengguna yang mulus dan indah. Saya percaya bahwa web harus cepat, interaktif, dan mudah diakses oleh semua orang.</p>
-        <p>Saya mahir dalam **HTML, CSS (termasuk Tailwind CSS), dan JavaScript**. Saat ini, saya sedang mendalami **React** dan arsitektur *state management* modern. Saya suka mengubah ide menjadi antarmuka yang nyata dan fungsional.</p>
-      </section>
+    <div class="desktop-icon" onclick="openApp('quote.html')">
+      <img src="https://via.placeholder.com/32/FFFF00/000000?text=QT" alt="Quote Icon">
+      <span>Quote Generator</span>
+    </div>
+    
+    <div class="desktop-icon" onclick="openApp('text_editing.html')">
+      <img src="https://via.placeholder.com/32/00FFFF/000000?text=TXT" alt="Text Editor Icon">
+      <span>Text Editor</span>
+    </div>
+    
+    <div class="desktop-icon" onclick="openApp('solar.html')">
+      <img src="https://via.placeholder.com/32/0000FF/FFFFFF?text=SYS" alt="Solar System Icon">
+      <span>Solar System</span>
+    </div>
 
-      <section id="skills">
-        <h2>Skills</h2>
-        <p>Saya berfokus pada ekosistem web modern. Beberapa teknologi yang saya kuasai:</p>
-        <ul>
-          <li>**Languages:** HTML5, CSS3, JavaScript (ES6+)</li>
-          <li>**Frameworks/Libraries:** Tailwind CSS, React.js (Basic)</li>
-          <li>**Tools:** Git, Figma, VS Code, Browser DevTools</li>
-          <li>**Concepts:** Responsive Design, UI/UX Principles, Web Performance Optimization</li>
-        </ul>
-      </section>
+    </div>
 
-      <section id="projects">
-        <h2>Projects</h2>
-        <div class="project-grid">
-          <div class="project-card">
-            <h3>Project A - Chatbot AI</h3>
-            <p>Aplikasi chat sederhana dengan fitur persona dan riwayat obrolan, dibuat dengan Vanilla JS dan Tailwind CSS.</p>
-            <a href="chatbox_ai.html" target="_blank">View Demo</a>
-          </div>
-          <div class="project-card">
-            <h3>Project B - Random Quote</h3>
-            <p>Generator kutipan motivasi acak menggunakan JavaScript murni.</p>
-            <a href="quote.html" target="_blank">View Demo</a>
-          </div>
-          <div class="project-card">
-            <h3>Project C - Text Editor</h3>
-            <p>Editor teks berbasis web dengan fitur line numbering dan dark mode.</p>
-            <a href="text_editing.html" target="_blank">View Demo</a>
-          </div>
-          <div class="project-card">
-            <h3>Project D - Solar System</h3>
-            <p>Demo embed visualisasi 3D Tata Surya dari NASA Eyes.</p>
-            <a href="solar.html" target="_blank">View Demo</a>
-          </div>
-        </div>
-      </section>
-
-      <section id="contact">
-        <h2>Contact</h2>
-        <p>Tertarik bekerja sama? Kirimkan pesan Anda!</p>
-          <form onsubmit="event.preventDefault();alert('Form demo. Replace with your backend or mailto link.')">
-            <input type="text" name="name" placeholder="Your name" required>
-            <input type="email" name="email" placeholder="Your email" required>
-            <textarea name="message" placeholder="Message..." required></textarea>
-            <div style="display:flex;gap:8px;justify-content:flex-end">
-              <button class="btn" type="submit">Send</button>
-            </div>
-          </form>
-        </div>
-      </section>
-
-    </main>
-
-    <footer>
-      Simple portfolio template • Customize free
-    </footer>
+  <div id="taskbar">
+    <div id="start-button">
+      <img src="https://via.placeholder.com/16/00FF00/000000?text=S" style="display:inline;vertical-align:middle;margin-right:5px;image-rendering:pixelated;" alt="Start Icon">
+      Start
+    </div>
+    
+    <div id="taskbar-center">
+      </div>
+    
+    <div id="taskbar-right">
+      <span id="clock">9:23 AM</span>
+    </div>
   </div>
 
   <script>
-    function toggleMobile(){
-      const nav = document.querySelector('nav ul');
-      if(!nav) return;
-      if(nav.style.display === 'flex') nav.style.display = 'none';
-      else nav.style.display = 'flex';
-      nav.style.flexDirection = 'column';
-      nav.style.position = 'absolute';
-      nav.style.right = '28px';
-      nav.style.top = '68px';
-      nav.style.background = 'rgba(2,6,23,0.6)';
-      nav.style.padding = '10px';
-    }
+    // FUNGSI UTAMA UNTUK DESKTOP PIXEL
 
-    // smooth scroll for internal links
-    document.querySelectorAll('a[href^="#"]').forEach(a=>{
-      a.addEventListener('click', e=>{
-        const href = a.getAttribute('href');
-        if(href.length>1){
-          e.preventDefault();
-          document.querySelector(href).scrollIntoView({
-            behavior: 'smooth'
-          });
-          // close mobile menu
-          const nav = document.querySelector('nav ul');
-          if(nav.style.display === 'flex') nav.style.display = 'none';
-        }
-      })
-    })
+    // 1. Fungsi Jam
+    function updateClock() {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+      document.getElementById('clock').textContent = timeString;
+    }
+    
+    // Perbarui setiap detik
+    setInterval(updateClock, 1000);
+    updateClock(); // Panggil sekali saat dimuat
+
+    // 2. Fungsi Buka Aplikasi
+    function openApp(url) {
+        // Ini adalah implementasi dasar, idealnya akan membuka jendela baru
+        // dengan gaya Windows, namun untuk kesederhanaan, kita gunakan window.open
+        window.open(url, '_blank', 'width=800,height=600,resizable=yes');
+    }
+    
+    // 3. Ikon Desktop (Opsional: Tambahkan fungsi drag & drop jika ingin lebih mirip)
+    // Saat ini hanya fungsi klik untuk openApp yang diterapkan.
   </script>
+
 </body>
 </html>
