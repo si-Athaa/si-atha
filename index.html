@@ -1,120 +1,189 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About: AthaOS Pixel</title>
-    <style>
-        :root {
-            --bg-color: #C0C0C0;
-            --titlebar-color: #000080;
-            --text-color: #000000;
-            --border-light: #FFFFFF;
-            --border-dark: #808080;
-            --blue: #000080;
-            --gray: #C0C0C0;
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AthaOS - Pixel Desktop</title>
+  <style>
+    :root {
+      --bg-color: #008080; /* Warna retro Windows */
+      --taskbar-color: #C0C0C0;
+      --start-btn-color: #000080;
+      --text-color: #000000;
+      --border-light: #FFFFFF;
+      --border-dark: #808080;
+    }
+    
+    /* Reset & Wallpaper */
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: monospace; /* Font pixel/monospasi */
+      color: var(--text-color);
+      /* Gunakan gambar sky_pixelbck.jpg sebagai wallpaper */
+      background-image: url('sky_pixelbck.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      overflow: hidden; /* Mencegah scroll pada desktop */
+      image-rendering: pixelated; /* Efek pixel */
+    }
 
-        body {
-            background-color: var(--blue); /* Background gelap di belakang jendela */
-            font-family: monospace;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+    /* Struktur Desktop */
+    #desktop {
+      height: calc(100% - 30px); /* Tinggi desktop minus taskbar */
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+    }
 
-        .window {
-            width: 90%;
-            max-width: 400px;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            /* Border Windows klasik */
-            border-style: solid;
-            border-width: 2px;
-            border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light);
-            box-shadow: 2px 2px 0 var(--border-dark);
-        }
+    /* Gaya Umum Windows Retro */
+    .pixel-border {
+      border: 3px solid;
+      border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light);
+    }
+    
+    /* Ikon Desktop */
+    .desktop-icon {
+      width: 80px;
+      text-align: center;
+      margin-bottom: 10px;
+      cursor: pointer;
+      padding: 5px;
+      user-select: none;
+      font-size: 12px;
+    }
+    .desktop-icon:hover {
+      background-color: rgba(0, 0, 0, 0.1);
+      border: 1px dashed var(--text-color);
+    }
+    .desktop-icon img {
+      width: 32px;
+      height: 32px;
+      display: block;
+      margin: 0 auto 5px;
+      image-rendering: pixelated;
+    }
 
-        .title-bar {
-            background-color: var(--titlebar-color);
-            color: var(--border-light);
-            padding: 2px 5px;
-            font-weight: bold;
-            font-size: 14px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+    /* Taskbar */
+    #taskbar {
+      height: 30px;
+      background-color: var(--taskbar-color);
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      border-top: 2px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 4px;
+      z-index: 1000;
+    }
 
-        .title-bar-controls button {
-            background-color: var(--bg-color);
-            font-size: 12px;
-            border: 2px solid;
-            border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light);
-            margin-left: 3px;
-            cursor: pointer;
-            height: 18px;
-            width: 18px;
-            line-height: 0;
-            padding: 0;
-        }
+    /* Tombol Start */
+    #start-button {
+      background-color: var(--taskbar-color);
+      color: var(--text-color);
+      font-weight: bold;
+      padding: 2px 10px;
+      font-size: 14px;
+      cursor: pointer;
+      /* Border Windows klasik */
+      border-style: solid;
+      border-width: 2px;
+      border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light);
+    }
+    #start-button:active {
+      border-color: var(--border-dark) var(--border-light) var(--border-light) var(--border-dark);
+      padding: 3px 9px 1px 11px; /* Efek ditekan */
+    }
 
-        .window-content {
-            padding: 15px;
-            text-align: center;
-            font-size: 12px;
-        }
-        
-        .window-content h1 {
-            font-size: 16px;
-            margin-top: 0;
-        }
-
-        .info-box {
-            border: 1px dashed var(--border-dark);
-            padding: 10px;
-            margin-bottom: 10px;
-            background-color: var(--border-light);
-        }
-
-        .ok-button {
-            padding: 5px 15px;
-            background-color: var(--gray);
-            border: 2px solid;
-            border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light);
-            cursor: pointer;
-            font-family: monospace;
-        }
-
-        .ok-button:active {
-            border-color: var(--border-dark) var(--border-light) var(--border-light) var(--border-dark);
-            padding: 6px 14px 4px 16px; /* Efek ditekan */
-        }
-    </style>
+    /* Area Clock */
+    #taskbar-right {
+      display: flex;
+      align-items: center;
+      background-color: var(--taskbar-color);
+      padding: 0 5px;
+      border-style: solid;
+      border-width: 1px;
+      border-color: var(--border-dark) var(--border-light) var(--border-light) var(--border-dark);
+      font-size: 12px;
+      height: 22px;
+    }
+  </style>
 </head>
 <body>
 
-<div class="window">
-    <div class="title-bar">
-        <span>About: AthaOS Pixel</span>
-        <div class="title-bar-controls">
-            <button onclick="window.close()">X</button>
-        </div>
+  <div id="desktop">
+    <div class="desktop-icon" onclick="openApp('chatbox_ai.html')">
+      <img src="https://raw.githubusercontent.com/si-Athaa/emoji/refs/heads/main/aichatbot.jpeg" alt="Chatbot Icon">
+      <span>Chatbot AI</span>
     </div>
-    <div class="window-content">
-        <h1>AthaOS Pixel Edition</h1>
-        <div class="info-box">
-            Versi: 1.0 (Pixel Build)<br>
-            Developer: Atha<br>
-            Tema: Windows Desktop Retro / Pixel Art<br>
-        </div>
-        <p>Terima kasih telah menggunakan UI Desktop Pixel ini. Semua aplikasi (Chatbot AI, Chat Stream, dll.) dapat diakses melalui ikon di desktop.</p>
-        <button class="ok-button" onclick="window.close()">OK</button>
+
+    <div class="desktop-icon" onclick="openApp('chattable.html')">
+      <img src="https://raw.githubusercontent.com/si-Athaa/emoji/refs/heads/main/chat-streaemer.jpeg" alt="Chat Stream Icon">
+      <span>Chat Stream</span>
     </div>
-</div>
+    <div class="desktop-icon" onclick="openApp('quote.html')">
+      <img src="https://raw.githubusercontent.com/si-Athaa/emoji/refs/heads/main/quotes.png" alt="Quote Icon">
+      <span>Quote Generator</span>
+    </div>
+    
+    <div class="desktop-icon" onclick="openApp('text_editing.html')">
+      <img src="https://raw.githubusercontent.com/si-Athaa/emoji/refs/heads/main/text_editor.png" alt="Text Editor Icon">
+      <span>Text Editor</span>
+    </div>
+    
+    <div class="desktop-icon" onclick="openApp('solar.html')">
+      <img src="https://raw.githubusercontent.com/si-Athaa/emoji/refs/heads/main/Screenshot%202025-11-20%2009.40.35.png" alt="Solar System Icon">
+      <span>Solar System</span>
+    </div>
+
+    <div class="desktop-icon" onclick="openApp('about.html')">
+      <img src="https://raw.githubusercontent.com/si-Athaa/emoji/refs/heads/main/about.png" alt="About Icon">
+      <span>About AthaOS</span>
+    </div>
+    </div>
+
+  <div id="taskbar">
+    <div id="start-button">
+      <img src="https://via.placeholder.com/16/00FF00/000000?text=S" style="display:inline;vertical-align:middle;margin-right:5px;image-rendering:pixelated;" alt="Start Icon">
+      Start
+    </div>
+    
+    <div id="taskbar-center">
+      </div>
+    
+    <div id="taskbar-right">
+      <span id="clock">9:23 AM</span>
+    </div>
+  </div>
+
+  <script>
+    // FUNGSI UTAMA UNTUK DESKTOP PIXEL
+
+    // 1. Fungsi Jam
+    function updateClock() {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+      document.getElementById('clock').textContent = timeString;
+    }
+    
+    // Perbarui setiap detik
+    setInterval(updateClock, 1000);
+    updateClock(); // Panggil sekali saat dimuat
+
+    // 2. Fungsi Buka Aplikasi
+    function openApp(url) {
+        // Membuka file di jendela baru dengan ukuran klasik
+        window.open(url, '_blank', 'width=800,height=600,resizable=yes,scrollbars=yes');
+    }
+    
+    // 3. Ikon Desktop (Opsional: Tambahkan fungsi drag & drop jika ingin lebih mirip)
+    // Saat ini hanya fungsi klik untuk openApp yang diterapkan.
+  </script>
 
 </body>
 </html>
