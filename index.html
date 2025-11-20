@@ -3,54 +3,141 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Portfolio - Simple Template</title>
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <title>Sky Pixel - Atha Portfolio</title> <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
+    /* ============================================
+      SKY PIXEL THEME MODIFICATIONS 
+      ============================================
+    */
     :root{
-      --bg:#0f1724;
-      --card:#0b1220;
-      --muted:#9aa4b2;
-      --accent:#6ee7b7;
-      --glass: rgba(255,255,255,0.03);
+      --bg: #101828; /* Dark blue/black */
+      --card: rgba(0,0,0,0.7); /* Semi-transparent for content visibility over background */
+      --muted: #a0a8b9; /* Soft white/blue */
+      --accent: #ffee58; /* Bright yellow untuk aksen bintang */
+      --glass: rgba(255,255,255,0.03); 
     }
+    
     *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial}
-    body{background:linear-gradient(180deg,#071026 0%, var(--bg) 100%);color:#e6eef6}
+    /* Ganti font utama ke font pixel */
+    html,body{
+        height:100%;
+        margin:0;
+        font-family:'Press Start 2P', Consolas, monospace, system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;
+        font-size: 12px; /* Ukuran font disesuaikan untuk keterbacaan font pixel */
+    }
+    
+    /* Terapkan gambar latar belakang */
+    body{
+        background: url('sky_pixelbck.jpg') no-repeat center center fixed;
+        background-size: cover;
+        color:#e6eef6;
+        text-shadow: 1px 1px #000; /* Shadow untuk kontras teks */
+    }
+
     a{color:inherit;text-decoration:none}
     .container{max-width:980px;margin:0 auto;padding:28px}
 
     /* nav */
     header{position:sticky;top:12px;z-index:40}
-    .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;background:transparent;padding:8px 12px;border-radius:12px}
+    .nav{
+        display:flex;align-items:center;justify-content:space-between;gap:16px;
+        background:rgba(0,0,0,0.8); /* Nav bar lebih gelap */
+        padding:8px 12px;
+        border-radius: 0; /* Kotak */
+        border: 2px solid var(--accent); /* Border pixel */
+    }
     .brand{display:flex;align-items:center;gap:12px}
-    .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#9be7ff);display:flex;align-items:center;justify-content:center;color:#022; font-weight:700}
+    .logo{
+        width:44px;height:44px;
+        border-radius: 0; /* Kotak */
+        background: var(--accent); /* Warna aksen flat */
+        display:flex;align-items:center;justify-content:center;
+        color:#101828; /* Teks gelap di aksen terang */
+        font-weight:700;
+        font-size: 14px;
+    }
     nav ul{display:flex;gap:14px;align-items:center;margin:0;padding:0;list-style:none}
-    .btn{background:var(--glass);padding:8px 12px;border-radius:10px;font-weight:600}
+    .btn{
+        background: #333d4f; /* Base tombol gelap */
+        padding:8px 12px;
+        border-radius: 0; /* Kotak */
+        font-weight:600;
+        border: 2px solid #fff; /* Border putih pixel */
+        box-shadow: 2px 2px 0 #000; /* Shadow pixel */
+        transition: all 0.1s ease;
+    }
+    .btn:hover {
+        background: #4f5b72;
+        box-shadow: 1px 1px 0 #000;
+    }
 
     /* hero */
     .hero{display:grid;grid-template-columns:1fr 320px;gap:28px;align-items:center;padding:32px 0}
-    .card{background:linear-gradient(180deg,rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:20px;border-radius:16px;box-shadow:0 6px 18px rgba(2,6,23,0.6)}
-    h1{margin:0;font-size:28px}
+    .card{
+        background: var(--card); /* Overlay semi-transparan gelap */
+        padding:20px;
+        border-radius: 0; /* Kotak */
+        box-shadow: 4px 4px 0 #000; /* Shadow pixel besar */
+        border: 2px solid var(--accent); /* Border pixel */
+    }
+    /* Ukuran heading disesuaikan */
+    h1{margin:0;font-size:24px}
+    h2{font-size: 20px;}
+    h3{font-size: 14px;}
+
     .lead{color:var(--muted);margin-top:8px}
-    .hire{display:inline-block;margin-top:14px;padding:10px 16px;border-radius:12px;background:var(--accent);color:#042; font-weight:700}
+    .hire{
+        display:inline-block;margin-top:14px;
+        padding:10px 16px;
+        border-radius: 0; /* Kotak */
+        background: var(--accent);
+        color:#101828; 
+        font-weight:700;
+        border: 2px solid #000;
+        box-shadow: 4px 4px 0 #000;
+    }
 
     /* skills */
     .skills{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-    .skill{background:rgba(255,255,255,0.03);padding:8px 10px;border-radius:999px;font-weight:600}
+    .skill{
+        background: rgba(255,255,255,0.1);
+        padding:6px 8px;
+        border-radius: 0; /* Kotak */
+        font-weight:600;
+        border: 1px solid #fff;
+    }
 
     /* projects */
     .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:16px}
-    .project{padding:12px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.02)}
+    .project{
+        padding:12px;
+        border-radius: 0;
+        background:var(--card);
+        border:1px solid rgba(255,255,255,0.1);
+        box-shadow: 2px 2px 0 #000;
+    }
     .project h3{margin:0;font-size:16px}
-    .project p{color:var(--muted);font-size:13px}
+    .project p{color:var(--muted);font-size:12px}
 
     /* contact */
     form{display:grid;gap:10px}
-    input,textarea{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:10px;border-radius:8px;color:inherit}
+    input,textarea{
+        background:#1a2232; /* Background input gelap */
+        border:1px solid var(--accent); /* Border aksen */
+        padding:10px;
+        border-radius:0; /* Kotak */
+        color:inherit
+    }
     textarea{min-height:120px}
 
-    footer{margin-top:36px;color:var(--muted);text-align:center;padding:18px 0}
+    footer{
+        margin-top:36px;
+        color:var(--muted);
+        text-align:center;
+        padding:18px 0;
+        font-size: 10px;
+    }
 
     /* responsive */
     @media(max-width:900px){
@@ -58,12 +145,39 @@
       .grid{grid-template-columns:1fr}
       nav ul{display:none}
       .mobile-menu{display:block}
-    }
-    .mobile-menu{display:none}
 
-    /* small helpers */
+      /* Mobile Menu Overlay adjustments */
+      nav ul{
+        background: rgba(0,0,0,0.9) !important;
+        border: 2px solid var(--accent);
+        border-radius: 0;
+        box-shadow: 4px 4px 0 #000;
+      }
+    }
+    .mobile-menu{
+        display:none;
+        background: #333d4f !important;
+        border: 2px solid #fff;
+    }
+    .mobile-menu:hover{
+        background: #4f5b72 !important;
+    }
+
+    /* Small helpers */
     .muted{color:var(--muted)}
-    .chip{display:inline-block;padding:6px 8px;border-radius:8px;background:rgba(255,255,255,0.02);font-weight:600}
+    .chip{display:inline-block;padding:6px 8px;border-radius:0;background:rgba(255,255,255,0.05);font-weight:600; border: 1px solid #fff;}
+
+    /* Image placeholder fix for pixel style */
+    .hero aside .card > div:first-child {
+        border-radius: 0 !important;
+        background: linear-gradient(180deg,var(--accent),#ffeea0) !important;
+        color: #101828 !important;
+        border: 2px solid #000;
+    }
+    /* ============================================
+      END SKY PIXEL THEME MODIFICATIONS 
+      ============================================
+    */
   </style>
 </head>
 <body>
@@ -71,108 +185,103 @@
     <header>
       <div class="nav">
         <div class="brand">
-          <div class="logo">si-athaa</div>
+          <div class="logo">ATHA</div> 
           <div>
-            <div style="font-weight:700">PORTFOLIO</div>
-            <div class="muted" style="font-size:12px">Simple & clean template</div>
+            <div style="font-weight:700">P O R T F O L I O</div>
+            <div class="muted" style="font-size:10px">S I M P L E • P I X E L</div>
           </div>
         </div>
         <nav>
           <ul>
-            <li><a href="#home" class="btn">Home</a></li>
-            <li><a href="#about" class="btn">About</a></li>
-            <li><a href="#skills" class="btn">Skills</a></li>
-            <li><a href="#projects" class="btn">Projects</a></li>
-            <li><a href="#contact" class="btn">Contact</a></li>
+            <li><a href="#home" class="btn">H O M E</a></li>
+            <li><a href="#about" class="btn">A B O U T</a></li>
+            <li><a href="#skills" class="btn">S K I L L S</a></li>
+            <li><a href="#projects" class="btn">P R O J E C T S</a></li>
+            <li><a href="#contact" class="btn">C O N T A C T</a></li>
           </ul>
         </nav>
-        <div class="mobile-menu btn" onclick="toggleMobile()">Menu</div>
+        <div class="mobile-menu btn" onclick="toggleMobile()">M E N U</div>
       </div>
     </header>
 
     <main>
-      <!-- HOME -->
       <section id="home" class="hero">
         <div class="card">
-          <h1>Hey, what’s up? I’m <span style="color:var(--accent)">Atha</span></h1>
-          <p class="lead">Frontend Dev | Absurd Dev, sometimes serious . Create simple websites, games and tools.</p>
-          <a class="hire" href="#contact">Hire me</a>
+          <h1>H E Y, W H A T’S U P? I’M <span style="color:var(--accent)">A T H A</span></h1>
+          <p class="lead">F R O N T E N D • D E V | A B S U R D • D E V , sometimes serious . C R E A T E • S I M P L E • W E B S I T E S , G A M E S • A N D • T O O L S.</p>
+          <a class="hire" href="#contact">H I R E • M E</a>
         </div>
 
         <aside class="card" style="text-align:center">
-          <div style="width:120px;height:120px;border-radius:12px;margin:0 auto;background:linear-gradient(180deg,#a7f3d0,#bfe9ff);display:flex;align-items:center;justify-content:center;color:#042;font-weight:800;font-size:28px">A</div>
-          <div style="margin-top:12px">Nice to meet you bro!!</div>
+          <div style="width:120px;height:120px;border-radius:0;margin:0 auto;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#101828;font-weight:800;font-size:32px">A</div>
+          <div style="margin-top:12px">N I C E • T O • M E E T • Y O U • B R O ! !</div>
         </aside>
       </section>
 
-      <!-- ABOUT -->
       <section id="about" style="margin-top:20px">
         <div class="card">
-          <h2>About me</h2>
+          <h2>A B O U T • M E</h2>
           <p class="muted">I enjoy learning HTML, CSS, PY, JS and creating simple projects.</p>
         </div>
       </section>
 
-      <!-- SKILLS -->
       <section id="skills" style="margin-top:20px">
         <div class="card">
-          <h2>Skills</h2>
+          <h2>S K I L L S</h2>
           <div class="skills">
-            <div class="skill">HTML</div>
-            <div class="skill">CSS</div>
-            <div class="skill">JavaScript</div>
-            <div class="skill">React</div>
-            <div class="skill">Canvas / Game</div>
-            <div class="skill">UI/UX</div>
+            <div class="skill">H T M L</div>
+            <div class="skill">C S S</div>
+            <div class="skill">J A V A S C R I P T</div>
+            <div class="skill">R E A C T</div>
+            <div class="skill">C A N V A S / G A M E</div>
+            <div class="skill">U I / U X</div>
           </div>
         </div>
       </section>
 
-      <!-- PROJECTS -->
       <section id="projects" style="margin-top:20px">
         <div class="card">
-          <h2>Projects</h2>
+          <h2>P R O J E C T S</h2>
           <div class="grid">
            <article class="project">
-              <h3>Chat Stream</h3>
+              <h3>C H A T • S T R E A M</h3>
               <p class="muted">Click to see project Chat Stream details.</p>
-             <div style="margin-top:8px"><a href="chattable.html" class="btn" target="_blank">View</a></div>
+             <div style="margin-top:8px"><a href="chattable.html" class="btn" target="_blank">V I E W</a></div>
             </article>
             <article class="project">
-              <h3>Quotes</h3>
+              <h3>Q U O T E S</h3>
               <p class="muted">Click to see project quotes details.</p>
-              <div style="margin-top:8px"><a href="quote.html" class="btn" target="_blank">View</a></div>
+              <div style="margin-top:8px"><a href="quote.html" class="btn" target="_blank">V I E W</a></div>
             </article>
             <article class="project">
-              <h3> -Text Editor- </h3>
+              <h3> - T E X T • E D I T O R - </h3>
               <p class="muted">Click to see project Text Editor details.</p>
-              <div style="margin-top:8px"><a href="text_editing.html" class="btn" target="_blank">View</a></div>
+              <div style="margin-top:8px"><a href="text_editing.html" class="btn" target="_blank">V I E W</a></div>
             </article>
             <article class="project">
-              <h3>Chatbox Ai✨</h3>
+              <h3>C H A T B O X • A I ✨</h3>
               <p class="muted">Click to see project Text Editor details.</p>
-              <div style="margin-top:8px"><a href="chatbox_ai.html" class="btn" target="_blank">View</a></div>
+              <div style="margin-top:8px"><a href="chatbox_ai.html" class="btn" target="_blank">V I E W</a></div>
             </article>
             <article class="project">
-              <h3>Solar System Iframe</h3>
+              <h3>S O L A R • S Y S T E M • I F R A M E</h3>
               <p class="muted">Click to see project Solar System Iframe details.</p>
-              <div style="margin-top:8px"><a href="solar.html" class="btn" target="_blank">View</a></div>
+              <div style="margin-top:8px"><a href="solar.html" class="btn" target="_blank">V I E W</a></div>
             </article>
           </div>
         </div>
       </section>
 
-      <!-- CONTACT -->
       <section id="contact" style="margin-top:20px">
         <div class="card">
-          <h2>Contact</h2>
+          <h2>C O N T A C T</h2>
           <p class="muted">Just go ahead and fill out the form, or, if it’s easier, send me an email: <span style="color:var(--accent)">youremail@example.com</span></p>
           <form onsubmit="event.preventDefault();alert('Form demo. Replace with your backend or mailto link.')">
-            <input type="text" name="name" placeholder="Your name" required>
-            <input type="email" name="email" placeholder="Your email" required>
-            <textarea name="message" placeholder="Message..." required></textarea>
+            <input type="text" name="name" placeholder="Y O U R • N A M E" required>
+            <input type="email" name="email" placeholder="Y O U R • E M A I L" required>
+            <textarea name="message" placeholder="M E S S A G E . . ." required></textarea>
             <div style="display:flex;gap:8px;justify-content:flex-end">
-              <button class="btn" type="submit">Send</button>
+              <button class="btn" type="submit">S E N D</button>
             </div>
           </form>
         </div>
@@ -181,7 +290,7 @@
     </main>
 
     <footer>
-      Simple portfolio template • Customize free
+      S I M P L E • P I X E L • T E M P L A T E • B Y • A T H A • C U S T O M I Z E • F R E E
     </footer>
   </div>
 
@@ -195,8 +304,11 @@
       nav.style.position = 'absolute';
       nav.style.right = '28px';
       nav.style.top = '68px';
-      nav.style.background = 'rgba(2,6,23,0.6)';
+      // Gaya mobile menu disesuaikan
+      nav.style.background = 'rgba(0,0,0,0.9)'; 
       nav.style.padding = '10px';
+      nav.style.borderRadius = '0';
+      nav.style.border = '2px solid var(--accent)';
     }
 
     // smooth scroll for internal links
